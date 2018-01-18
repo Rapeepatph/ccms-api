@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CCMSAPI", "CCMSAPI\CCMSAPI.csproj", "{21E9B881-BEEF-412E-BA01-B5F927CF882B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21E9B881-BEEF-412E-BA01-B5F927CF882B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21E9B881-BEEF-412E-BA01-B5F927CF882B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21E9B881-BEEF-412E-BA01-B5F927CF882B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21E9B881-BEEF-412E-BA01-B5F927CF882B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {042E91DB-93DD-4EB4-8736-6B99D95C8416}
+	EndGlobalSection
+EndGlobal
