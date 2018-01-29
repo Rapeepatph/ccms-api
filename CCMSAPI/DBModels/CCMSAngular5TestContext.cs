@@ -20,6 +20,7 @@ namespace CCMSAPI.DBModels
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50)

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CCMSAPI.DBModels;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace CCMSAPI
 {
@@ -39,7 +40,18 @@ namespace CCMSAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.Use(async (context, next) =>
+            {
+                await next();
+                if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
+            })
+    .UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } })
+    .UseStaticFiles()
+.UseMvc();
         }
     }
 }
