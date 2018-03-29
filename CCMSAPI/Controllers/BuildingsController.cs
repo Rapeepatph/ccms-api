@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CCMSAPI.DBModels;
+using Newtonsoft.Json;
+using CCMSAPI.Model;
 
 namespace CCMSAPI.Controllers
 {
@@ -45,7 +47,64 @@ namespace CCMSAPI.Controllers
 
             return Ok(buildings);
         }
+        // GET: api/Buildings/GetStatus/{buildingId}
+        [HttpGet("GetStatus/{buildingId}")]
+        public IActionResult GetStatusByBuildingId(int buildingId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var services = _context.Services.Where(x => x.BuildingId == buildingId);
+
+            if (services == null)
+            {
+                return NotFound();
+            }
+            int DefaultStatus = 0;
+            List<int> sumStatus = new List<int>();
+            foreach (var service in services)
+            {
+                
+                List<DataEquipment> arrayEquip = JsonConvert.DeserializeObject<List<DataEquipment>>(service.DataEquipment);
+                
+                List<int?> sumStatusEachService = new List<int?>();
+                foreach (var obj in arrayEquip)
+                {
+                    var equipment =  _context.Equipments.SingleOrDefault(m => m.Name == obj.Name);
+                    if(equipment != null)
+                    {
+                        sumStatusEachService.Add(equipment.Status==null?0: equipment.Status);
+                    }
+                }
+                if (sumStatusEachService.Contains(2))
+                    sumStatus.Add(2);
+                else if (sumStatusEachService.Contains(3))
+                    sumStatus.Add(3);
+                else if (sumStatusEachService.Contains(0))
+                    sumStatus.Add(0);
+                //else if (sumStatusEachService.Contains(4))
+                //    sumStatus.Add(4);
+                else if (sumStatusEachService.Contains(1))
+                    sumStatus.Add(1);
+                else
+                    sumStatus.Add(DefaultStatus);
+
+            }
+            if (sumStatus.Contains(2))
+                return Ok(2);
+            else if (sumStatus.Contains(3))
+                return Ok(3);
+            else if (sumStatus.Contains(0))
+                return Ok(0);
+            //else if (sumStatus.Contains(4))
+            //    return Ok(4);
+            else if (sumStatus.Contains(1))
+                return Ok(1);
+
+            return Ok(DefaultStatus);
+        }
         // PUT: api/Buildings/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBuildings([FromRoute] int id, [FromBody] Buildings buildings)

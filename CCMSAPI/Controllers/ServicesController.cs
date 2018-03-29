@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CCMSAPI.DBModels;
 using CCMSAPI.Model;
+using Newtonsoft.Json;
 
 namespace CCMSAPI.Controllers
 {
@@ -46,12 +47,58 @@ namespace CCMSAPI.Controllers
 
             return Ok(services);
         }
+        // GET: api/Services/ByBuildingId?buildingId=3
         [HttpGet("ByBuildingId")]
         public IEnumerable<Services> ByBuildingId(int buildingId)
         {
             var res = _context.Services.Where(x => x.BuildingId == buildingId);
             return res.ToList();
         }
+
+        // GET: api/Services/GetStatus/{serviceId}
+        [HttpGet("GetStatus/{serviceId}")]
+        public IActionResult GetStatusByServiceId(int serviceId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var service = _context.Services.SingleOrDefault(x => x.Id == serviceId);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+            int DefaultStatus = 0;
+         
+            List<DataEquipment> arrayEquip = JsonConvert.DeserializeObject<List<DataEquipment>>(service.DataEquipment);
+
+            List<int?> sumStatusEachService = new List<int?>();
+            foreach (var obj in arrayEquip)
+            {
+                var equipment = _context.Equipments.SingleOrDefault(m => m.Name == obj.Name);
+                if (equipment != null)
+                {
+                    sumStatusEachService.Add(equipment.Status == null ? 0 : equipment.Status);
+                }
+            }
+            if (sumStatusEachService.Contains(2))
+                return Ok(2);
+            else if (sumStatusEachService.Contains(3))
+                return Ok(3);
+            else if (sumStatusEachService.Contains(0))
+                return Ok(0);
+            //else if (sumStatusEachService.Contains(4))
+            //    return Ok(4);
+            else if (sumStatusEachService.Contains(1))
+                return Ok(1);
+            else
+                return Ok(DefaultStatus);
+            
+        }
+
+
         // PUT: api/Services/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutServices([FromRoute] int id, [FromBody] Services services)
@@ -95,6 +142,10 @@ namespace CCMSAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+            else if(NameServiceExists(services.Name))
+            {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
             _context.Services.Add(services);
             try
             {
@@ -108,7 +159,7 @@ namespace CCMSAPI.Controllers
                 }
                 else
                 {
-                    throw;
+                    throw e;
                 }
             }
 
@@ -139,6 +190,10 @@ namespace CCMSAPI.Controllers
         private bool ServicesExists(int id)
         {
             return _context.Services.Any(e => e.Id == id);
+        }
+        private bool NameServiceExists (string name)
+        {
+            return _context.Services.Any(e => e.Name == name);
         }
     }
 }

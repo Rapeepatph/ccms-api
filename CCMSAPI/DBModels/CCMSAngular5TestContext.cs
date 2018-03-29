@@ -14,12 +14,12 @@ namespace CCMSAPI.DBModels
  : base(options)
         { }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Buildings>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
-
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -51,6 +51,12 @@ namespace CCMSAPI.DBModels
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.Building)
+                    .WithMany(p => p.Services)
+                    .HasForeignKey(d => d.BuildingId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Services_Buildings");
             });
         }
     }

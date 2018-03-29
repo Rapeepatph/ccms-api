@@ -8,6 +8,7 @@ namespace CCMSAPI.DBModels
         public Buildings()
         {
             Equipments = new HashSet<Equipments>();
+            Services = new HashSet<Services>();
         }
 
         public int Id { get; set; }
@@ -16,5 +17,6 @@ namespace CCMSAPI.DBModels
         public double? Lat { get; set; }
 
         public ICollection<Equipments> Equipments { get; set; }
+        public ICollection<Services> Services { get; set; }
     }
 }

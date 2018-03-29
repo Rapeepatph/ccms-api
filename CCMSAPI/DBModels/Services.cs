@@ -9,5 +9,7 @@ namespace CCMSAPI.DBModels
         public int BuildingId { get; set; }
         public string Name { get; set; }
         public string DataEquipment { get; set; }
+
+        public Buildings Building { get; set; }
     }
 }

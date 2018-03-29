@@ -45,6 +45,22 @@ namespace CCMSAPI.Controllers
 
             return Ok(equipments);
         }
+        //GET: api/Equipments/GetStatus/{nameEquip}
+        [HttpGet("GetStatus/{nameEquip}")]
+        public async Task<IActionResult> GetStatusByEquipmentName(string nameEquip)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var equipment = await _context.Equipments.SingleOrDefaultAsync(m => m.Name == nameEquip);
+
+            if (equipment == null)
+            {
+                return NotFound();
+            }
+            return Ok(equipment);
+        }
 
         // PUT: api/Equipments/5
         [HttpPut("{id}")]
