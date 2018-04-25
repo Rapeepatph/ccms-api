@@ -4,16 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CCMSAPI.DBModels
 {
-    public partial class CCMSAngular5TestContext : DbContext
+    public partial class CCMSAngular5NewContext : DbContext
     {
         public virtual DbSet<Buildings> Buildings { get; set; }
         public virtual DbSet<Equipments> Equipments { get; set; }
+        public virtual DbSet<MainServices> MainServices { get; set; }
         public virtual DbSet<Services> Services { get; set; }
 
-        public CCMSAngular5TestContext(DbContextOptions options)
- : base(options)
+        public CCMSAngular5NewContext(DbContextOptions options)
+  : base(options)
         { }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,11 +41,11 @@ namespace CCMSAPI.DBModels
                     .HasConstraintName("FK_Equipments_Buildings");
             });
 
-            modelBuilder.Entity<Services>(entity =>
+            modelBuilder.Entity<MainServices>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.DataEquipment).IsUnicode(false);
+                entity.Property(e => e.BuildingId).HasColumnName("BuildingID");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -53,10 +53,30 @@ namespace CCMSAPI.DBModels
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.Building)
-                    .WithMany(p => p.Services)
+                    .WithMany(p => p.MainServices)
                     .HasForeignKey(d => d.BuildingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Services_Buildings");
+                    .HasConstraintName("FK_MainServices_Buildings");
+            });
+
+            modelBuilder.Entity<Services>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.DataEquipment).IsUnicode(false);
+
+                entity.Property(e => e.MainServiceId).HasColumnName("MainServiceID");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.MainService)
+                    .WithMany(p => p.Services)
+                    .HasForeignKey(d => d.MainServiceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Services_MainServices");
             });
         }
     }

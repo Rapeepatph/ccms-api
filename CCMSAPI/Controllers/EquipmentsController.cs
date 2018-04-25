@@ -13,9 +13,9 @@ namespace CCMSAPI.Controllers
     [Route("api/Equipments")]
     public class EquipmentsController : Controller
     {
-        private readonly CCMSAngular5TestContext _context;
+        private readonly CCMSAngular5NewContext _context;
 
-        public EquipmentsController(CCMSAngular5TestContext context)
+        public EquipmentsController(CCMSAngular5NewContext context)
         {
             _context = context;
         }

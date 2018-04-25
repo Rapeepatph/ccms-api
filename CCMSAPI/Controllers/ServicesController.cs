@@ -15,9 +15,9 @@ namespace CCMSAPI.Controllers
     [Route("api/Services")]
     public class ServicesController : Controller
     {
-        private readonly CCMSAngular5TestContext _context;
+        private readonly CCMSAngular5NewContext _context;
 
-        public ServicesController(CCMSAngular5TestContext context)
+        public ServicesController(CCMSAngular5NewContext context)
         {
             _context = context;
         }
@@ -47,14 +47,39 @@ namespace CCMSAPI.Controllers
 
             return Ok(services);
         }
-        // GET: api/Services/ByBuildingId?buildingId=3
+        // GET: api/Services/ByBuildingId?buildingId=3           NOT USE !!!!!!!!
         [HttpGet("ByBuildingId")]
         public IEnumerable<Services> ByBuildingId(int buildingId)
         {
-            var res = _context.Services.Where(x => x.BuildingId == buildingId);
-            return res.ToList();
-        }
+            var mainServices = _context.MainServices.Where(x => x.BuildingId == buildingId);
+            if(mainServices == null)
+            {
+                return null;
+            }
+            List<Services> listService = new List<Services>();
+            foreach(var mainService in mainServices)
+            {
+                var res = _context.Services.Where(x => x.MainServiceId == mainService.Id);
+                foreach(var obj in res)
+                {
+                    listService.Add(obj);
+                }
+            }
 
+            return listService.ToList();
+        }
+        // GET: api/Services/ByMainServiceId?mainServiceId=3
+        [HttpGet("ByMainServiceId")]
+        public IEnumerable<Services> ByMainServiceId(int mainServiceId)
+        {
+            var services = _context.Services.Where(x => x.MainServiceId == mainServiceId);
+            if (services == null)
+            {
+                return null;
+            }
+            
+            return services.ToList();
+        }
         // GET: api/Services/GetStatus/{serviceId}
         [HttpGet("GetStatus/{serviceId}")]
         public IActionResult GetStatusByServiceId(int serviceId)
@@ -63,7 +88,7 @@ namespace CCMSAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             var service = _context.Services.SingleOrDefault(x => x.Id == serviceId);
 
             if (service == null)

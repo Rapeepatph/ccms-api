@@ -28,7 +28,7 @@ namespace CCMSAPI
         {
             services.AddMvc();
 
-            services.AddDbContext<CCMSAngular5TestContext>(options =>
+            services.AddDbContext<CCMSAngular5NewContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("CCMSDatabase")));
         }
 

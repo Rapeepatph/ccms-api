@@ -6,10 +6,11 @@ namespace CCMSAPI.DBModels
     public partial class Services
     {
         public int Id { get; set; }
-        public int BuildingId { get; set; }
         public string Name { get; set; }
+        public int MainServiceId { get; set; }
         public string DataEquipment { get; set; }
+        public bool IsSelected { get; set; }
 
-        public Buildings Building { get; set; }
+        public MainServices MainService { get; set; }
     }
 }
